@@ -8,6 +8,15 @@ set(CMAKE_AUTORCC ON)
 find_package(Qt5Widgets)
 find_package(Qt5OpenGL)
 
+set(EXAMPLES
+        drawcommands)
+
+foreach(EXAMPLE ${EXAMPLES})
+    add_executable(${EXAMPLE} ${EXAMPLE}/main.cpp ${EXAMPLE}/${EXAMPLE}widget.cpp ${EXAMPLE}/${EXAMPLE}widget.hpp)
+    set_property(TARGET ${EXAMPLE} PROPERTY DEBUG_POSTFIX _d)
+    target_link_libraries(${EXAMPLE} Qt5::Widgets)
+endforeach(EXAMPLE)
+
 add_executable(Triangle triangle/main.cpp triangle/openglwindow.cpp triangle/openglwindow.h)
 target_link_libraries(Triangle Qt5::Widgets)
 
@@ -28,3 +37,6 @@ target_link_libraries(hellogl2 Qt5::Widgets)
 
 add_executable(keypress keypress/main.cpp keypress/glwidget.cpp keypress/glwidget.hpp)
 target_link_libraries(keypress Qt5::OpenGL Qt5::Widgets)
+
+add_executable(qt_layout qt_layout/main.cpp qt_layout/mainwindow.cpp qt_layout/mainwindow.hpp qt_layout/calculator.cpp qt_layout/calculator.hpp qt_layout/button.cpp qt_layout/button.hpp qt_layout/glwidget.cpp qt_layout/glwidget.hpp qt_layout/mainwindow2.cpp qt_layout/mainwindow2.hpp)
+target_link_libraries(qt_layout Qt5::Widgets)
