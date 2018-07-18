@@ -40,3 +40,6 @@ target_link_libraries(keypress Qt5::OpenGL Qt5::Widgets)
 
 add_executable(qt_layout qt_layout/main.cpp qt_layout/mainwindow.cpp qt_layout/mainwindow.hpp qt_layout/calculator.cpp qt_layout/calculator.hpp qt_layout/button.cpp qt_layout/button.hpp qt_layout/glwidget.cpp qt_layout/glwidget.hpp qt_layout/mainwindow2.cpp qt_layout/mainwindow2.hpp)
 target_link_libraries(qt_layout Qt5::Widgets)
+
+add_executable(qt_codecs qt_codecs/main.cpp qt_codecs/mainwindow.cpp qt_codecs/mainwindow.hpp qt_codecs/previewform.cpp qt_codecs/previewform.hpp)
+target_link_libraries(qt_codecs Qt5::Widgets)
