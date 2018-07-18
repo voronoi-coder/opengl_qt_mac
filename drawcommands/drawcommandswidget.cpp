@@ -117,6 +117,10 @@ void DrawComWidget::resizeGL(int w, int h) {
     aspect = float(w) / float(h);
 }
 
+// TODO nothing in the first two "paintGL"; the default Camera Coordinate :
+//                                          1,(0,0,0)
+//                                          2,up--the positive Y axis to--the negative Z axis
+//                                          3,unit is the same as the world coordinate's.
 void DrawComWidget::paintGL() {
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
