@@ -9,6 +9,8 @@ int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
     app.setApplicationName("drawcommands");
 
+//    QCoreApplication::setAttribute(Qt::AA_UseDesktopOpenGL);
+
     QSurfaceFormat format;
     format.setDepthBufferSize(24);
     QSurfaceFormat::setDefaultFormat(format);

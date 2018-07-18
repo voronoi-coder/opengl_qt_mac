@@ -22,7 +22,7 @@ protected:
     void paintGL() override;
 
     void mouseReleaseEvent(QMouseEvent *event) override;
-
+    void keyPressEvent(QKeyEvent *event)override;
 private:
     QOpenGLShaderProgram *program;
     QOpenGLBuffer *vboPos;
@@ -34,5 +34,7 @@ private:
     int render_projection_matrix_loc;
 
     float aspect;
+
+    GLenum polygonMode = GL_FILL;
 };
 

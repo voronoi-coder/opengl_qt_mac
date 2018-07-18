@@ -14,7 +14,7 @@ set(EXAMPLES
 foreach(EXAMPLE ${EXAMPLES})
     add_executable(${EXAMPLE} ${EXAMPLE}/main.cpp ${EXAMPLE}/${EXAMPLE}widget.cpp ${EXAMPLE}/${EXAMPLE}widget.hpp)
     set_property(TARGET ${EXAMPLE} PROPERTY DEBUG_POSTFIX _d)
-    target_link_libraries(${EXAMPLE} Qt5::Widgets)
+    target_link_libraries(${EXAMPLE} Qt5::Widgets "-framework OpenGL")
 endforeach(EXAMPLE)
 
 add_executable(Triangle triangle/main.cpp triangle/openglwindow.cpp triangle/openglwindow.h)

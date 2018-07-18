@@ -4,6 +4,7 @@
 
 #include "drawcommandswidget.hpp"
 #include <QDebug>
+#include <QKeyEvent>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLBuffer>
 #include <QOpenGLVertexArrayObject>
@@ -127,6 +128,7 @@ void DrawComWidget::paintGL() {
 
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
+    glPolygonMode(GL_FRONT_AND_BACK, polygonMode);
 
     QOpenGLVertexArrayObject::Binder vaoBinder(m_vao);
 
@@ -144,13 +146,34 @@ void DrawComWidget::paintGL() {
 
     glDrawArrays(GL_TRIANGLES, 0, 3);
 
+    ibo->bind();
+
     modelM.setToIdentity();
     modelM.translate(-1.0f, 0.0f, -5.0f);
     program->setUniformValue(render_model_matrix_loc, modelM);
-    ibo->bind();
     glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, nullptr);
+
+    modelM.setToIdentity();
+    modelM.translate(1.0f, 0.0f, -5.0f);
+    program->setUniformValue(render_model_matrix_loc, modelM);
+    glDrawElementsBaseVertex(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, nullptr, 1);
+
+    modelM.setToIdentity();
+    modelM.translate(3.0f, 0.0f, -5.0f);
+    program->setUniformValue(render_model_matrix_loc, modelM);
+    glDrawArraysInstanced(GL_TRIANGLES, 0, 3, 1);
 }
 
 void DrawComWidget::mouseReleaseEvent(QMouseEvent *event) {
     update();
+}
+
+void DrawComWidget::keyPressEvent(QKeyEvent *event) {
+    switch (event->key()) {
+        case Qt::Key_M: {
+            polygonMode = (polygonMode == GL_FILL) ? GL_LINE : GL_FILL;
+            update();
+        }
+            break;
+    }
 }
