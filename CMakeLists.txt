@@ -43,3 +43,6 @@ target_link_libraries(qt_layout Qt5::Widgets)
 
 add_executable(qt_codecs qt_codecs/main.cpp qt_codecs/mainwindow.cpp qt_codecs/mainwindow.hpp qt_codecs/previewform.cpp qt_codecs/previewform.hpp)
 target_link_libraries(qt_codecs Qt5::Widgets)
+
+add_executable(keypress_redbook keypress_redbook/main.cpp keypress_redbook/glwidget.cpp keypress_redbook/glwidget.hpp)
+target_link_libraries(keypress_redbook Qt5::Widgets "-framework OpenGL")
