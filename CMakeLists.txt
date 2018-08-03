@@ -49,3 +49,20 @@ target_link_libraries(keypress_redbook Qt5::Widgets "-framework OpenGL")
 
 add_executable(drawcircle drawcircle/main.cpp drawcircle/glwidget.hpp drawcircle/glwidget.cpp drawcircle/circle.hpp drawcircle/circle.cpp)
 target_link_libraries(drawcircle Qt5::Widgets "-framework OpenGL")
+
+add_executable(uniformblock uniformblock/main.cpp uniformblock/glwidget.hpp uniformblock/glwidget.cpp loadshader/LoadShader.hpp loadshader/LoadShader.cpp)
+target_link_libraries(uniformblock Qt5::Widgets "-framework OpenGL")
+
+add_library(loadshader loadshader/LoadShader.hpp loadshader/LoadShader.cpp)
+target_link_libraries(loadshader "-framework OpenGL")
+
+
+
+
+
+
+
+
+
+
+
