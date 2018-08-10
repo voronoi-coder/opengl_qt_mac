@@ -10,11 +10,12 @@ find_package(Qt5OpenGL)
 
 set(EXAMPLES
         drawcommands
-        gouraud)
+        gouraud
+        shadowmap)
 
 foreach(EXAMPLE ${EXAMPLES})
     add_executable(${EXAMPLE} ${EXAMPLE}/main.cpp ${EXAMPLE}/${EXAMPLE}widget.cpp ${EXAMPLE}/${EXAMPLE}widget.hpp
-            loadshader/LoadShader.cpp loadshader/LoadShader.hpp)
+            loadshader/LoadShader.cpp loadshader/LoadShader.hpp vbm/vbm.hpp vbm/vbm.cpp)
     set_property(TARGET ${EXAMPLE} PROPERTY DEBUG_POSTFIX _d)
     target_link_libraries(${EXAMPLE} Qt5::Widgets "-framework OpenGL")
 endforeach(EXAMPLE)
