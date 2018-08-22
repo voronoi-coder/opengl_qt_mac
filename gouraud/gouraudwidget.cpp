@@ -49,6 +49,8 @@ void GouraudFloatGLWidget::initializeGL() {
     GLuint program = LoadShaders(shaders);
     glUseProgram(program);
 
+    heightLoc = glGetUniformLocation(program, "u_height");
+
     glVertexAttribPointer(vColor, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(VertexData), BUFFER_OFFSET(0));
     glVertexAttribPointer(vPosition, 2, GL_FLOAT, GL_FALSE, sizeof(VertexData), BUFFER_OFFSET(sizeof(vertices[0].color)));
 
@@ -64,6 +66,8 @@ void GouraudFloatGLWidget::resizeGL(int w, int h) {
 void GouraudFloatGLWidget::paintGL() {
     std::cout<<__FUNCTION__<<std::endl;
     glClear(GL_COLOR_BUFFER_BIT);
+
+    glUniform1f(heightLoc, 200.0);
 
     glPolygonMode(GL_FRONT_AND_BACK, polygonMode);
 

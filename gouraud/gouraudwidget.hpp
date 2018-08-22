@@ -33,4 +33,6 @@ private:
     static constexpr GLuint NumVertices = 6;
 
     GLenum polygonMode = GL_FILL;
+
+    GLint heightLoc;
 };

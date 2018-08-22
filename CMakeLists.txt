@@ -8,16 +8,20 @@ set(CMAKE_AUTORCC ON)
 find_package(Qt5Widgets)
 find_package(Qt5OpenGL)
 
+add_library(loadshader STATIC loadshader/LoadShader.hpp loadshader/LoadShader.cpp)
+target_link_libraries(loadshader "-framework OpenGL")
+
 set(EXAMPLES
         drawcommands
         gouraud
-        shadowmap)
+        shadowmap
+        statictexture)
 
 foreach(EXAMPLE ${EXAMPLES})
     add_executable(${EXAMPLE} ${EXAMPLE}/main.cpp ${EXAMPLE}/${EXAMPLE}widget.cpp ${EXAMPLE}/${EXAMPLE}widget.hpp
-            loadshader/LoadShader.cpp loadshader/LoadShader.hpp vbm/vbm.hpp vbm/vbm.cpp)
+            vbm/vbm.hpp vbm/vbm.cpp)
     set_property(TARGET ${EXAMPLE} PROPERTY DEBUG_POSTFIX _d)
-    target_link_libraries(${EXAMPLE} Qt5::Widgets "-framework OpenGL")
+    target_link_libraries(${EXAMPLE} Qt5::Widgets "-framework OpenGL" loadshader)
 endforeach(EXAMPLE)
 
 add_executable(Triangle triangle/main.cpp triangle/openglwindow.cpp triangle/openglwindow.h)
@@ -56,8 +60,8 @@ target_link_libraries(drawcircle Qt5::Widgets "-framework OpenGL")
 add_executable(uniformblock uniformblock/main.cpp uniformblock/glwidget.hpp uniformblock/glwidget.cpp loadshader/LoadShader.hpp loadshader/LoadShader.cpp)
 target_link_libraries(uniformblock Qt5::Widgets "-framework OpenGL")
 
-add_library(loadshader loadshader/LoadShader.hpp loadshader/LoadShader.cpp)
-target_link_libraries(loadshader "-framework OpenGL")
+add_library(loadtexture loadtexture/vermilion.hpp loadtexture/loadtexture.cpp)
+target_link_libraries(loadtexture "-framework OpenGL")
 
 
 
