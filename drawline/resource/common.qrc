@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>center_line_vs.glsl</file>
+        <file>center_line_fs.glsl</file>
+        <file>line_vs.glsl</file>
+        <file>line_fs.glsl</file>
+    </qresource>
+</RCC>

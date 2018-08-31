@@ -63,7 +63,7 @@ target_link_libraries(uniformblock Qt5::Widgets "-framework OpenGL")
 add_library(loadtexture loadtexture/vermilion.hpp loadtexture/loadtexture.cpp)
 target_link_libraries(loadtexture "-framework OpenGL")
 
-add_executable(drawline drawline/main.cpp drawline/drawlinewidget.hpp drawline/drawlinewidget.cpp drawline/optional.hpp)
+add_executable(drawline drawline/main.cpp drawline/drawlinewidget.hpp drawline/drawlinewidget.cpp drawline/optional.hpp drawline/resource/common.qrc)
 target_link_libraries(drawline Qt5::Widgets "-framework OpenGL" loadshader)
 
 

@@ -4,6 +4,9 @@
 
 #include <QMatrix4x4>
 #include <QKeyEvent>
+#include <QFile>
+#include <QFileInfo>
+
 #include "drawlinewidget.hpp"
 #include "optional.hpp"
 #include "../loadshader/LoadShader.hpp"
@@ -14,23 +17,39 @@ DrawLineGLWidget::DrawLineGLWidget(QWidget *parent) : QOpenGLWidget(parent) {
 }
 
 DrawLineGLWidget::~DrawLineGLWidget() {
+    glUseProgram(0);
 
+    glDeleteProgram(program);
+    glDeleteProgram(centerLineProgram);
+
+    glDeleteVertexArrays(1, &vao);
+    glDeleteVertexArrays(1, &centerLineVao);
+
+    glDeleteBuffers(1, &vbo);
+    glDeleteBuffers(1, &centerLineVbo);
+
+    glDeleteBuffers(1, &ibo);
+    glDeleteBuffers(1, &centerLineIbo);
 }
 
 void DrawLineGLWidget::initializeGL() {
-    ShaderInfo light_shaders[] = {
-            {GL_VERTEX_SHADER,   "/Users/junhe/Documents/OpenGL/opengl_qt_mac/drawline/line_vs.glsl"},
-            {GL_FRAGMENT_SHADER, "/Users/junhe/Documents/OpenGL/opengl_qt_mac/drawline/line_fs.glsl"},
+    ShaderInfo line_shaders[] = {
+            {GL_VERTEX_SHADER,   "/Users/junhe/Documents/OpenGL/opengl_qt_mac/drawline/resource/line_vs.glsl"},
+            {GL_FRAGMENT_SHADER, "/Users/junhe/Documents/OpenGL/opengl_qt_mac/drawline/resource/line_fs.glsl"},
             {GL_NONE}
     };
 
-    program = LoadShaders(light_shaders);
+    program = LoadShaders(line_shaders);
 
     std::vector<QPoint> line;
-    line.push_back({0, 0});
-    line.push_back({0, 1});
-    line.push_back({1, 1});
-    line.push_back({1, 0});
+
+    line.push_back({-30, 30});
+    line.push_back({-25, 25});
+    line.push_back({-17, 28});
+    line.push_back({-5, 5});
+    line.push_back({10, 5});
+    line.push_back({30, 30});
+    line.push_back({40, -30}); // miter length > 2.0f
 
     buildLine(line);
 
@@ -45,7 +64,7 @@ void DrawLineGLWidget::initializeGL() {
 
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
-    glVertexAttribPointer(0, 2, GL_UNSIGNED_SHORT, GL_FALSE, sizeof(LineLayoutVertex), (void *) 0);
+    glVertexAttribPointer(0, 2, GL_SHORT, GL_FALSE, sizeof(LineLayoutVertex), (void *) 0);
     glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(LineLayoutVertex),
                           (void *) offsetof(LineLayoutVertex, a_data));
 
@@ -55,6 +74,34 @@ void DrawLineGLWidget::initializeGL() {
     matrixLoc = glGetUniformLocation(program, "u_matrix");
     colorLoc = glGetUniformLocation(program, "u_color");
     widthLoc = glGetUniformLocation(program, "u_width");
+
+    // center_line
+    ShaderInfo center_line_shaders[] = {
+            {GL_VERTEX_SHADER,   "/Users/junhe/Documents/OpenGL/opengl_qt_mac/drawline/resource/center_line_vs.glsl"},
+            {GL_FRAGMENT_SHADER, "/Users/junhe/Documents/OpenGL/opengl_qt_mac/drawline/resource/center_line_fs.glsl"},
+            {GL_NONE}
+    };
+
+    centerLineProgram = LoadShaders(center_line_shaders);
+
+    glGenBuffers(1, &centerLineVbo);
+    glBindBuffer(GL_ARRAY_BUFFER, centerLineVbo);
+    glBufferData(GL_ARRAY_BUFFER, lineVertexs.size() * sizeof(std::array<short, 2>), lineVertexs.data(),
+                 GL_STATIC_DRAW);
+
+    glGenBuffers(1, &centerLineIbo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, centerLineIbo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, lineIndexs.size() * sizeof(uint16_t), lineIndexs.data(), GL_STATIC_DRAW);
+
+    glGenVertexArrays(1, &centerLineVao);
+    glBindVertexArray(centerLineVao);
+    glVertexAttribPointer(0, 2, GL_SHORT, GL_FALSE, 0, (void *) 0);
+
+    glEnableVertexAttribArray(0);
+
+    centerLineColorLoc = glGetUniformLocation(centerLineProgram, "u_color");
+    centerLineMatrixLoc = glGetUniformLocation(centerLineProgram, "u_matrix");
+
 }
 
 void DrawLineGLWidget::resizeGL(int w, int h) {
@@ -76,17 +123,28 @@ void DrawLineGLWidget::paintGL() {
     projM.perspective(45.0f, aspect, 1.0f, 500.0f);
     QMatrix4x4 modelM;
     modelM.setToIdentity();
-    modelM.translate(.0f, 0.0f, -10.0f);
+    modelM.translate(.0f, 0.0f, -100.0f);
 
     GLfloat color[4] = {1.0f, 0.0f, 0.0f, 1.0f};
 
     glUniformMatrix4fv(matrixLoc, 1, GL_FALSE, (projM * modelM).data());
     glUniform4fv(colorLoc, 1, color);
-    glUniform1f(widthLoc, 0.5f);
+    glUniform1f(widthLoc, 2.f);
 
     glBindVertexArray(vao);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
     glDrawElements(GL_TRIANGLES, indexs.size(), GL_UNSIGNED_SHORT, nullptr);
+
+    glUseProgram(centerLineProgram);
+
+    GLfloat centerLineColor[4] = {0.0f, 1.0f, 0.0f, 1.0f};
+
+    glUniformMatrix4fv(centerLineMatrixLoc, 1, GL_FALSE, (projM * modelM).data());
+    glUniform4fv(centerLineColorLoc, 1, centerLineColor);
+
+    glBindVertexArray(centerLineVao);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, centerLineIbo);
+    glDrawElements(GL_LINES, lineIndexs.size(), GL_UNSIGNED_SHORT, nullptr);
 }
 
 const float SHARP_CORNER_OFFSET = 15.0f;
@@ -233,6 +291,13 @@ void DrawLineGLWidget::addCurrentVertex(const QPoint &currentCoordinate, double 
     }
     e1 = e2;
     e2 = e3;
+
+    lineVertexs.push_back({static_cast<int16_t>(currentCoordinate.x()), static_cast<int16_t>(currentCoordinate.y())});
+
+    if (lineVertexs.size() > 1) {
+        lineIndexs.push_back(lineVertexs.size() - 2);
+        lineIndexs.push_back(lineVertexs.size() - 1);
+    }
 
     // There is a maximum "distance along the line" that we can store in the buffers.
     // When we get close to the distance, reset it to zero and add the vertex again with
