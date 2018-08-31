@@ -94,7 +94,7 @@ void StaticTextureGLWidget::paintGL() {
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, tex);
-    glUniform1i(texLoc, 0);
+//    glUniform1i(texLoc, 0);
 
     glBindVertexArray(vao);
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);

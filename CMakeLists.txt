@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.9)
 project(qt_opengl)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
@@ -62,6 +62,9 @@ target_link_libraries(uniformblock Qt5::Widgets "-framework OpenGL")
 
 add_library(loadtexture loadtexture/vermilion.hpp loadtexture/loadtexture.cpp)
 target_link_libraries(loadtexture "-framework OpenGL")
+
+add_executable(drawline drawline/main.cpp drawline/drawlinewidget.hpp drawline/drawlinewidget.cpp drawline/optional.hpp)
+target_link_libraries(drawline Qt5::Widgets "-framework OpenGL" loadshader)
 
 
 
