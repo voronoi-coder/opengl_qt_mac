@@ -38,7 +38,7 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
 
 private:
-    void buildLine(const std::vector<QPoint> coordinates);
+    void buildLine(const std::vector<QPoint> coordinates, LineCapType cap = LineCapType::Butt);
     void addCurrentVertex(const QPoint &currentCoordinate, double &distance, const QVector2D &normal, double endLeft, double endRight, bool round);
 
 private:

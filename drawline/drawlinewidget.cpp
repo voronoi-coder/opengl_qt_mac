@@ -51,7 +51,7 @@ void DrawLineGLWidget::initializeGL() {
     line.push_back({30, 30});
     line.push_back({40, -30}); // miter length > 2.0f
 
-    buildLine(line);
+    buildLine(line, LineCapType::Round);
 
     // buildline
     glGenBuffers(1, &vbo);
@@ -114,8 +114,12 @@ void DrawLineGLWidget::paintGL() {
     glClearDepth(1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+
     glPolygonMode(GL_FRONT_AND_BACK, polygonMode);
 
+    // draw line
     glUseProgram(program);
 
     QMatrix4x4 projM;
@@ -135,6 +139,7 @@ void DrawLineGLWidget::paintGL() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
     glDrawElements(GL_TRIANGLES, indexs.size(), GL_UNSIGNED_SHORT, nullptr);
 
+    // draw center line
     glUseProgram(centerLineProgram);
 
     GLfloat centerLineColor[4] = {0.0f, 1.0f, 0.0f, 1.0f};
@@ -165,7 +170,7 @@ QVector2D perp(const QVector2D &v) {
     return QVector2D(-v.y(), v.x());
 }
 
-void DrawLineGLWidget::buildLine(const std::vector<QPoint> coordinates) {
+void DrawLineGLWidget::buildLine(const std::vector<QPoint> coordinates, LineCapType cap) {
     const std::size_t len = [&coordinates] {
         std::size_t l = coordinates.size();
         while (l >= 2 && coordinates[l - 1] == coordinates[l - 2]) {
@@ -188,8 +193,8 @@ void DrawLineGLWidget::buildLine(const std::vector<QPoint> coordinates) {
     const float miterLimit = joinType == LineJoinType::Bevel ? 1.05f : m_miter_limit;
 
     const QPoint firstCoordinate = coordinates[first];
-    const LineCapType beginCap = LineCapType::Butt;
-    const LineCapType endCap = LineCapType::Butt;
+    const LineCapType beginCap = cap;
+    const LineCapType endCap = cap;
 
     double distance = 0;
     bool startOfLine = true;
@@ -249,6 +254,16 @@ void DrawLineGLWidget::buildLine(const std::vector<QPoint> coordinates) {
                 addCurrentVertex(*currentCoordinate, distance, *nextNormal, 0, 0, false);
             } else {
                 addCurrentVertex(*currentCoordinate, distance, *prevNormal, 0, 0, false);
+            }
+        } else if (!middleVertex && currentCap == LineCapType::Round) {
+            if (nextCoordinate) {
+                addCurrentVertex(*currentCoordinate, distance, *nextNormal, -1, -1, true);
+                addCurrentVertex(*currentCoordinate, distance, *nextNormal, 0, 0, false);
+            } else {
+                addCurrentVertex(*currentCoordinate, distance, *prevNormal, 0, 0, false);
+                addCurrentVertex(*currentCoordinate, distance, *prevNormal, 1, 1, true);
+
+                e1 = e2 = -1;
             }
         } else if (middleVertex && currentJoin == LineJoinType::Miter) {
             joinNormal = joinNormal * miterLength;
@@ -318,26 +333,3 @@ void DrawLineGLWidget::keyPressEvent(QKeyEvent *event) {
             break;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
