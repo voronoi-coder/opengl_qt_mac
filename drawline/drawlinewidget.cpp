@@ -117,6 +117,9 @@ void DrawLineGLWidget::paintGL() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CLIP_DISTANCE0);
+
     glPolygonMode(GL_FRONT_AND_BACK, polygonMode);
 
     // draw line

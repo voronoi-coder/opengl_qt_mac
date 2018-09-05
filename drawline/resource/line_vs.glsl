@@ -13,6 +13,8 @@ uniform mat4 u_matrix;
 uniform highp vec4 u_color;
 uniform mediump float u_width;
 
+uniform vec4 clip_plane = vec4(30.0, 0.0, 0.0, 0.0);
+
 out vec4 v_color;
 out vec2 v_normal;
 
@@ -29,6 +31,8 @@ void main() {
     mediump vec2 dist = halfwidth * a_extrude * scale;
 
     vec2 pos = floor(a_pos * 0.5);
+
+    gl_ClipDistance[0] = dot(vec4(pos, 0.0, 0.0), clip_plane);
 
     gl_Position = u_matrix * vec4(pos + dist, 0.0, 1.0);
 

@@ -66,6 +66,9 @@ target_link_libraries(loadtexture "-framework OpenGL")
 add_executable(drawline drawline/main.cpp drawline/drawlinewidget.hpp drawline/drawlinewidget.cpp drawline/optional.hpp drawline/resource/common.qrc)
 target_link_libraries(drawline Qt5::Widgets "-framework OpenGL" loadshader)
 
+add_executable(clip_plane clip_plane/main.cpp clip_plane/clipplanewidget.hpp clip_plane/clipplanewidget.cpp)
+target_link_libraries(clip_plane "-framework OpenGL" Qt5::Widgets loadshader)
+
 
 
 
