@@ -6,6 +6,7 @@
 #include <QTextStream>
 #include <QDebug>
 #include <QVector3D>
+#include <QMouseEvent>
 #include <set>
 #include <iostream>
 #include "clipplanewidget.hpp"
@@ -70,9 +71,6 @@ void ClipPlaneWidget::resizeGL(int w, int h) {
     viewMatrx.setToIdentity();
     viewMatrx.lookAt({0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f, 0.0f});
 
-    modelMatrx.setToIdentity();
-    modelMatrx.translate(0, -2.0f, -25.0f);
-
     std::cout << __FUNCTION__ << " w, h " << w << " " << h << std::endl;
 }
 
@@ -81,7 +79,12 @@ void ClipPlaneWidget::paintGL() {
 
     lightPos = {40, 10, 20};
     cameraPos = {0.0f, 0.0f, 0.0f};
-    clip_plane = {0.0f, 0.0f, 0.0f, 1.0};
+    clip_plane = {1.0f, 0.0f, 0.0f, 2.0f * delta};
+
+    modelMatrx.setToIdentity();
+    modelMatrx.translate(0, -2.0f, -25.0f);
+    modelMatrx.rotate(xAngle, 1.0f, 0.0f, 0.0f);
+    modelMatrx.rotate(yAngle, 0.0f, 1.0f, 0.0f);
 
     glUseProgram(program);
 
@@ -96,6 +99,18 @@ void ClipPlaneWidget::paintGL() {
 }
 
 void ClipPlaneWidget::keyPressEvent(QKeyEvent *event) {
+    switch (event->key()) {
+        case Qt::Key_Left: {
+            delta = std::min(2.0f, delta + 0.1f);
+            update();
+        }
+            break;
+        case Qt::Key_Right: {
+            delta = std::max(-2.0f, delta - 0.1f);
+            update();
+        }
+            break;
+    }
 }
 
 void ClipPlaneWidget::loadObject() {
@@ -176,3 +191,20 @@ void ClipPlaneWidget::loadObject() {
     std::cout << __FUNCTION__ << std::endl;
 
 }
+
+void ClipPlaneWidget::mouseMoveEvent(QMouseEvent *event) {
+    QPointF delta = event->localPos() - m_lastPos;
+
+    yAngle += delta.x() * 0.3;
+    xAngle += delta.y() * 0.3;
+
+    qDebug() << xAngle << " " << yAngle << delta;
+
+    update();
+    event->accept();
+}
+
+void ClipPlaneWidget::mousePressEvent(QMouseEvent *event) {
+    m_lastPos = event->localPos();
+}
+

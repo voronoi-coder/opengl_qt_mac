@@ -22,6 +22,10 @@ protected:
 
     void keyPressEvent(QKeyEvent *event) override;
 
+    void mouseMoveEvent(QMouseEvent *event) override;
+
+    void mousePressEvent(QMouseEvent *event) override;
+
 private:
     void loadObject();
 
@@ -45,5 +49,11 @@ private:
     std::array<float, 3> cameraPos;
     std::array<float, 3> lightPos;
     std::array<float, 4> clip_plane;
+
+    QPointF m_lastPos;
+    float xAngle;
+    float yAngle;
+
+    float delta = 1.0;
 };
 
