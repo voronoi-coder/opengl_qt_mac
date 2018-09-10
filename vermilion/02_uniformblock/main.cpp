@@ -1,25 +1,24 @@
 //
-// Created by zhaojunhe on 2018/8/10.
+// Created by zhaojunhe on 2018/7/18.
 //
+
 #include <QApplication>
 #include <QSurfaceFormat>
-#include "shadowmapwidget.hpp"
-
-// The drawing is not successful.
+#include "02_uniformblock.hpp"
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
     QSurfaceFormat format;
-    format.setDepthBufferSize(32);
+    format.setDepthBufferSize(24);
     format.setVersion(3, 3);
     format.setProfile(QSurfaceFormat::CoreProfile);
     QSurfaceFormat::setDefaultFormat(format);
 
-    app.setApplicationName("Shadow Mapping Example");
+    app.setApplicationName("02_uniformblock");
 
-    ShadowMapGLWidget widget;
-    widget.show();
+    GLWidget glWidget;
+    glWidget.show();
 
     return app.exec();
 }

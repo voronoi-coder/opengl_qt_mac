@@ -2,8 +2,8 @@
 // Created by zhaojunhe on 2018/8/20.
 //
 
-#include "statictexturewidget.hpp"
-#include "../loadshader/LoadShader.hpp"
+#include "06_statictexture.hpp"
+#include "../../lib/loadshader/LoadShader.hpp"
 #include <gl3ext.h>
 
 StaticTextureGLWidget::StaticTextureGLWidget(QWidget *parent) : QOpenGLWidget(parent) {
@@ -19,8 +19,8 @@ StaticTextureGLWidget::~StaticTextureGLWidget() {
 
 void StaticTextureGLWidget::initializeGL() {
     ShaderInfo light_shaders[] = {
-            {GL_VERTEX_SHADER,   "/Users/junhe/Documents/OpenGL/opengl_qt_mac/statictexture/static_texture_vs.glsl"},
-            {GL_FRAGMENT_SHADER, "/Users/junhe/Documents/OpenGL/opengl_qt_mac/statictexture/static_texture_fs.glsl"},
+            {GL_VERTEX_SHADER,   "/Users/junhe/Documents/OpenGL/opengl_qt_mac/vermilion/06_statictexture/static_texture_vs.glsl"},
+            {GL_FRAGMENT_SHADER, "/Users/junhe/Documents/OpenGL/opengl_qt_mac/vermilion/06_statictexture/static_texture_fs.glsl"},
             {GL_NONE}
     };
 

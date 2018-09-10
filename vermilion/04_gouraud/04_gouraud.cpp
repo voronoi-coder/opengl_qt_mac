@@ -4,8 +4,8 @@
 
 #include <iostream>
 #include <QKeyEvent>
-#include "gouraudwidget.hpp"
-#include "../loadshader/LoadShader.hpp"
+#include "04_gourand.hpp"
+#include "../../lib/loadshader/LoadShader.hpp"
 
 #define BUFFER_OFFSET(a) ((void*)(a))
 
@@ -41,8 +41,8 @@ void GouraudFloatGLWidget::initializeGL() {
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     ShaderInfo shaders[] = {
-            {GL_VERTEX_SHADER, "/Users/junhe/Documents/OpenGL/opengl_qt_mac/gouraud/vs.glsl"},
-            {GL_FRAGMENT_SHADER, "/Users/junhe/Documents/OpenGL/opengl_qt_mac/gouraud/fs.glsl"},
+            {GL_VERTEX_SHADER, "/Users/junhe/Documents/OpenGL/opengl_qt_mac/vermilion/04_gouraud/vs.glsl"},
+            {GL_FRAGMENT_SHADER, "/Users/junhe/Documents/OpenGL/opengl_qt_mac/vermilion/04_gouraud/fs.glsl"},
             {GL_NONE, NULL}
     };
 

@@ -5,7 +5,7 @@
 #pragma once
 
 #include <QOpenGLWidget>
-#include "../vbm/vbm.hpp"
+#include "../../lib/vbm/vbm.hpp"
 
 class ShadowMapGLWidget : public QOpenGLWidget {
 public:

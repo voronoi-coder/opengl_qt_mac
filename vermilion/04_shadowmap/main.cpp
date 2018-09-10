@@ -1,23 +1,24 @@
 //
-// Created by zhaojunhe on 2018/8/9.
+// Created by zhaojunhe on 2018/8/10.
 //
-
 #include <QApplication>
 #include <QSurfaceFormat>
-#include "gouraudwidget.hpp"
+#include "04_shadowmap.hpp"
+
+// The drawing is not successful.
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
     QSurfaceFormat format;
-    format.setDepthBufferSize(24);
-    format.setVersion(4, 0);
+    format.setDepthBufferSize(32);
+    format.setVersion(3, 3);
     format.setProfile(QSurfaceFormat::CoreProfile);
     QSurfaceFormat::setDefaultFormat(format);
 
-    app.setApplicationName("Gouraud (Float) Example");
+    app.setApplicationName("Shadow Mapping Example");
 
-    GouraudFloatGLWidget widget;
+    ShadowMapGLWidget widget;
     widget.show();
 
     return app.exec();

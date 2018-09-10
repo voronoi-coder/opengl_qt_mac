@@ -3,11 +3,11 @@
 //
 
 #include <QApplication>
-#include "drawcommandswidget.hpp"
+#include "03_drawcommands.hpp"
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
-    app.setApplicationName("drawcommands");
+    app.setApplicationName("03_drawcommands");
 
 //    QCoreApplication::setAttribute(Qt::AA_UseDesktopOpenGL);
 

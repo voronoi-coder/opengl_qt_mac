@@ -9,7 +9,7 @@
 
 #include "drawlinewidget.hpp"
 #include "optional.hpp"
-#include "../loadshader/LoadShader.hpp"
+#include "../../lib/loadshader/LoadShader.hpp"
 
 
 DrawLineGLWidget::DrawLineGLWidget(QWidget *parent) : QOpenGLWidget(parent) {
@@ -34,8 +34,8 @@ DrawLineGLWidget::~DrawLineGLWidget() {
 
 void DrawLineGLWidget::initializeGL() {
     ShaderInfo line_shaders[] = {
-            {GL_VERTEX_SHADER,   "/Users/junhe/Documents/OpenGL/opengl_qt_mac/drawline/resource/line_vs.glsl"},
-            {GL_FRAGMENT_SHADER, "/Users/junhe/Documents/OpenGL/opengl_qt_mac/drawline/resource/line_fs.glsl"},
+            {GL_VERTEX_SHADER,   "/Users/junhe/Documents/OpenGL/opengl_qt_mac/mapbox/drawline/resource/line_vs.glsl"},
+            {GL_FRAGMENT_SHADER, "/Users/junhe/Documents/OpenGL/opengl_qt_mac/mapbox/drawline/resource/line_fs.glsl"},
             {GL_NONE}
     };
 
@@ -77,8 +77,8 @@ void DrawLineGLWidget::initializeGL() {
 
     // center_line
     ShaderInfo center_line_shaders[] = {
-            {GL_VERTEX_SHADER,   "/Users/junhe/Documents/OpenGL/opengl_qt_mac/drawline/resource/center_line_vs.glsl"},
-            {GL_FRAGMENT_SHADER, "/Users/junhe/Documents/OpenGL/opengl_qt_mac/drawline/resource/center_line_fs.glsl"},
+            {GL_VERTEX_SHADER,   "/Users/junhe/Documents/OpenGL/opengl_qt_mac/mapbox/drawline/resource/center_line_vs.glsl"},
+            {GL_FRAGMENT_SHADER, "/Users/junhe/Documents/OpenGL/opengl_qt_mac/mapbox/drawline/resource/center_line_fs.glsl"},
             {GL_NONE}
     };
 

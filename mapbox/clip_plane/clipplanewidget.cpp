@@ -10,7 +10,7 @@
 #include <set>
 #include <iostream>
 #include "clipplanewidget.hpp"
-#include "../loadshader/LoadShader.hpp"
+#include "../../lib/loadshader/LoadShader.hpp"
 
 ClipPlaneWidget::ClipPlaneWidget(QWidget *parent) : QOpenGLWidget(parent) {}
 
@@ -20,8 +20,8 @@ void ClipPlaneWidget::initializeGL() {
     loadObject();
 
     ShaderInfo shaders[] = {
-            {GL_VERTEX_SHADER,   "/Users/junhe/Documents/OpenGL/opengl_qt_mac/clip_plane/clip_plane_vs.glsl"},
-            {GL_FRAGMENT_SHADER, "/Users/junhe/Documents/OpenGL/opengl_qt_mac/clip_plane/clip_plane_fs.glsl"},
+            {GL_VERTEX_SHADER,   "/Users/junhe/Documents/OpenGL/opengl_qt_mac/mapbox/clip_plane/clip_plane_vs.glsl"},
+            {GL_FRAGMENT_SHADER, "/Users/junhe/Documents/OpenGL/opengl_qt_mac/mapbox/clip_plane/clip_plane_fs.glsl"},
             {GL_NONE}
     };
 
@@ -120,7 +120,7 @@ void ClipPlaneWidget::loadObject() {
 
     std::map<uint16_t, std::set<std::array<float, 3>>> normal_map;
 
-    QFile myobject("/Users/junhe/Documents/OpenGL/opengl_qt_mac/clip_plane/ch.obj");
+    QFile myobject("/Users/junhe/Documents/OpenGL/opengl_qt_mac/mapbox/clip_plane/ch.obj");
     if (!myobject.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qDebug() << "route don't open.";
         return;

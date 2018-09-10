@@ -2,7 +2,7 @@
 // Created by zhaojunhe on 2018/7/5.
 //
 
-#include "drawcommandswidget.hpp"
+#include "03_drawcommands.hpp"
 #include <QDebug>
 #include <QKeyEvent>
 #include <QOpenGLShaderProgram>

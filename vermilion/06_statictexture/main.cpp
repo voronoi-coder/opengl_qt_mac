@@ -3,7 +3,7 @@
 //
 #include <QApplication>
 #include <QSurfaceFormat>
-#include "statictexturewidget.hpp"
+#include "06_statictexture.hpp"
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);

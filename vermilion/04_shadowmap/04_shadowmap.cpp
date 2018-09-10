@@ -6,8 +6,8 @@
 #include <time.h>
 #include <math.h>
 #include <QMatrix4x4>
-#include "shadowmapwidget.hpp"
-#include "../loadshader/LoadShader.hpp"
+#include "04_shadowmap.hpp"
+#include "../../lib/loadshader/LoadShader.hpp"
 
 #define FRUSTUM_DEPTH       800.0f
 #define DEPTH_TEXTURE_SIZE  2048
@@ -31,8 +31,8 @@ void ShadowMapGLWidget::initializeGL() {
     glCreateProgram();
 
     ShaderInfo light_shaders[] = {
-            {GL_VERTEX_SHADER,   "/Users/junhe/Documents/OpenGL/opengl_qt_mac/shadowmap/shadow_vs.glsl"},
-            {GL_FRAGMENT_SHADER, "/Users/junhe/Documents/OpenGL/opengl_qt_mac/shadowmap/shadow_fs.glsl"},
+            {GL_VERTEX_SHADER,   "/Users/junhe/Documents/OpenGL/opengl_qt_mac/vermilion/04_shadowmap/shadow_vs.glsl"},
+            {GL_FRAGMENT_SHADER, "/Users/junhe/Documents/OpenGL/opengl_qt_mac/vermilion/04_shadowmap/shadow_fs.glsl"},
             {GL_NONE}
     };
 
@@ -42,8 +42,8 @@ void ShadowMapGLWidget::initializeGL() {
 
     // Create the program for rendering the scene from the viewer's position
     ShaderInfo scene_shaders[] = {
-            {GL_VERTEX_SHADER,   "/Users/junhe/Documents/OpenGL/opengl_qt_mac/shadowmap/scene_vs.glsl"},
-            {GL_FRAGMENT_SHADER, "/Users/junhe/Documents/OpenGL/opengl_qt_mac/shadowmap/scene_fs.glsl"},
+            {GL_VERTEX_SHADER,   "/Users/junhe/Documents/OpenGL/opengl_qt_mac/vermilion/04_shadowmap/scene_vs.glsl"},
+            {GL_FRAGMENT_SHADER, "/Users/junhe/Documents/OpenGL/opengl_qt_mac/vermilion/04_shadowmap/scene_fs.glsl"},
             {GL_NONE}
     };
 
@@ -112,7 +112,7 @@ void ShadowMapGLWidget::initializeGL() {
     glEnableVertexAttribArray(1);
 
     // Load the object
-    object.LoadFromVBM("/Users/junhe/Documents/OpenGL/opengl_qt_mac/shadowmap/armadillo_low.vbm", 0, 1, 2);
+    object.LoadFromVBM("/Users/junhe/Documents/OpenGL/opengl_qt_mac/vermilion/04_shadowmap/armadillo_low.vbm", 0, 1, 2);
 }
 
 void ShadowMapGLWidget::resizeGL(int w, int h) {

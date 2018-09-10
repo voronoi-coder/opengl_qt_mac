@@ -6,8 +6,8 @@
 #include <cstdlib>
 
 
-#include "glwidget.hpp"
-#include "../loadshader/LoadShader.hpp"
+#include "02_uniformblock.hpp"
+#include "../../lib/loadshader/LoadShader.hpp"
 
 #define BUFFER_OFFSET(a) ((void*)(a))
 
@@ -64,8 +64,8 @@ void GLWidget::initializeGL() {
     GLuint program;
     glClearColor(1, 0, 0, 1);
     ShaderInfo shaders[] = {
-            {GL_VERTEX_SHADER,   "/Users/junhe/Documents/OpenGL/opengl_qt_mac/uniformblock/unifom_block_vs.glsl", vShader},
-            {GL_FRAGMENT_SHADER, "/Users/junhe/Documents/OpenGL/opengl_qt_mac/uniformblock/unifom_block_fs.glsl", fShader},
+            {GL_VERTEX_SHADER,   "/Users/junhe/Documents/OpenGL/opengl_qt_mac/vermilion/02_uniformblock/unifom_block_vs.glsl", vShader},
+            {GL_FRAGMENT_SHADER, "/Users/junhe/Documents/OpenGL/opengl_qt_mac/vermilion/02_uniformblock/unifom_block_fs.glsl", fShader},
             {GL_NONE, NULL}
     };
 
