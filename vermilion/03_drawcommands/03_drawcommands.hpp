@@ -4,13 +4,8 @@
 #pragma once
 
 #include <QOpenGLWidget>
-#include <QOpenGLFunctions>
 
-class QOpenGLShaderProgram;
-class QOpenGLBuffer;
-class QOpenGLVertexArrayObject;
-
-class DrawComWidget : public QOpenGLWidget, protected QOpenGLFunctions {
+class DrawComWidget : public QOpenGLWidget {
 public:
     DrawComWidget(QWidget *parent = 0);
 
@@ -18,23 +13,25 @@ public:
 
 protected:
     void initializeGL() override;
+
     void resizeGL(int w, int h) override;
+
     void paintGL() override;
 
-    void mouseReleaseEvent(QMouseEvent *event) override;
-    void keyPressEvent(QKeyEvent *event)override;
-private:
-    QOpenGLShaderProgram *program;
-    QOpenGLBuffer *vboPos;
-    QOpenGLBuffer *vboColor;
-    QOpenGLBuffer *ibo;
-    QOpenGLVertexArrayObject *m_vao;
+    void keyPressEvent(QKeyEvent *event) override;
 
-    int render_model_matrix_loc;
-    int render_projection_matrix_loc;
+private:
 
     float aspect;
 
     GLenum polygonMode = GL_FILL;
+
+    GLuint program;
+    GLuint vao[1];
+    GLuint vbo[1];
+    GLuint ebo[1];
+
+    GLint model_matrix_loc;
+    GLint project_matrix_loc;
 };
 

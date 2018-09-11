@@ -3,77 +3,44 @@
 //
 
 #include "03_drawcommands.hpp"
+#include "../../lib/loadshader/LoadShader.hpp"
 #include <QDebug>
 #include <QKeyEvent>
-#include <QOpenGLShaderProgram>
-#include <QOpenGLBuffer>
-#include <QOpenGLVertexArrayObject>
-
-const char *vsrc = R"SHADER(
-uniform mat4 model_matrix;
-uniform mat4 projection_matrix;
-
-attribute vec4 position;
-attribute vec4 color;
-
-varying vec4 vs_fs_color;
-
-void main(void) {
-    vs_fs_color = color;
-    gl_Position = projection_matrix * (model_matrix * position);
-}
-)SHADER";
-
-const char *fsrc = R"SHADER(
-varying vec4 vs_fs_color;
-
-void main() {
-    gl_FragColor = vs_fs_color;
-}
-
-)SHADER";
+#include <QMatrix4x4>
 
 DrawComWidget::DrawComWidget(QWidget *parent) : QOpenGLWidget(parent) {}
 
 DrawComWidget::~DrawComWidget() {
     makeCurrent();
-
-    vboPos->destroy();
-    vboColor->destroy();
-    ibo->destroy();
-    m_vao->destroy();
-
-    delete m_vao;
-    delete ibo;
-    delete vboColor;
-    delete vboPos;
-    delete program;
-
+    glUseProgram(0);
+    glDeleteProgram(program);
+    glDeleteVertexArrays(1, vao);
+    glDeleteBuffers(1, vbo);
     doneCurrent();
 }
 
 
 void DrawComWidget::initializeGL() {
-    initializeOpenGLFunctions();
+    ShaderInfo shader_info[] = {
+            {GL_VERTEX_SHADER,   "/Users/junhe/Documents/OpenGL/opengl_qt_mac/vermilion/03_drawcommands/vs.glsl"},
+            {GL_FRAGMENT_SHADER, "/Users/junhe/Documents/OpenGL/opengl_qt_mac/vermilion/03_drawcommands/fs.glsl"},
+            {GL_NONE, NULL}
+    };
 
-    program = new QOpenGLShaderProgram;
-    program->addShaderFromSourceCode(QOpenGLShader::Vertex, vsrc);
-    program->addShaderFromSourceCode(QOpenGLShader::Fragment, fsrc);
-    program->bindAttributeLocation("position", 0);
-    program->bindAttributeLocation("color", 1);
-    program->link();
-    program->bind();
+    program = LoadShaders(shader_info);
 
-    render_model_matrix_loc = program->uniformLocation("model_matrix");
-    render_projection_matrix_loc = program->uniformLocation("projection_matrix");
+    glUseProgram(program);
+    model_matrix_loc = glGetUniformLocation(program, "model_matrix");
+    project_matrix_loc = glGetUniformLocation(program, "projection_matrix");
 
     static const GLfloat vertex_positions[] = {
             -1.0f, -1.0f, 0.0f, 1.0f,
             1.0f, -1.0f, 0.0f, 1.0f,
             -1.0f, 1.0f, 0.0f, 1.0f,
-            1.0f, 1.0f, 0.0f, 1.0f
+            -1.0f, -1.0f, 0.0f, 1.0f,
     };
 
+    // Color for each vertex
     static const GLfloat vertex_colors[] = {
             1.0f, 1.0f, 1.0f, 1.0f,
             1.0f, 1.0f, 0.0f, 1.0f,
@@ -81,41 +48,33 @@ void DrawComWidget::initializeGL() {
             0.0f, 1.0f, 1.0f, 1.0f
     };
 
+    // Indices for the triangle strips
     static const GLushort vertex_indices[] = {
             0, 1, 2
     };
 
-    ibo = new QOpenGLBuffer(QOpenGLBuffer::IndexBuffer);
-    ibo->create();
-    ibo->bind();
-    ibo->allocate(vertex_indices, sizeof(vertex_indices));
+    glGenBuffers(1, ebo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo[0]);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(vertex_indices), vertex_indices, GL_STATIC_DRAW);
 
-    m_vao = new QOpenGLVertexArrayObject;
-    m_vao->create();
-    QOpenGLVertexArrayObject::Binder valBinder(m_vao);
+    glGenVertexArrays(1, vao);
+    glBindVertexArray(vao[0]);
 
-    QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
+    glGenBuffers(1, vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_colors) + sizeof(vertex_positions), (void *) 0, GL_STATIC_DRAW);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertex_positions), vertex_positions);
+    glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertex_positions), sizeof(vertex_colors), vertex_colors);
 
-    vboPos = new QOpenGLBuffer;
-    vboPos->create();
-    vboPos->bind();
-    vboPos->allocate(vertex_positions, sizeof(vertex_positions));
-    f->glEnableVertexAttribArray(0);
-    f->glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
-    vboPos->release();
-
-    vboColor = new QOpenGLBuffer;
-    vboColor->create();
-    vboColor->bind();
-    vboColor->allocate(vertex_colors, sizeof(vertex_colors));
-    f->glEnableVertexAttribArray(1);
-    f->glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
-    vboColor->release();
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, (void *) 0);
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (const GLvoid *) sizeof(vertex_positions));
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
 }
 
 void DrawComWidget::resizeGL(int w, int h) {
     glViewport(0, 0, w, h);
-    aspect = float(w) / float(h);
+    aspect = float(h) / float(w);
 }
 
 // TODO nothing in the first two "paintGL"; the default Camera Coordinate :
@@ -127,45 +86,40 @@ void DrawComWidget::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT);
 
     glEnable(GL_CULL_FACE);
-    glEnable(GL_DEPTH_TEST);
+    glDisable(GL_DEPTH_TEST);
+
     glPolygonMode(GL_FRONT_AND_BACK, polygonMode);
 
-    QOpenGLVertexArrayObject::Binder vaoBinder(m_vao);
+    glUseProgram(program);
+    glBindVertexArray(vao[0]);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo[0]);
 
-    program->bind();
+    QMatrix4x4 projMatrix;
+    QMatrix4x4 modelMatrix;
 
-    QMatrix4x4 projM;
-    projM.setToIdentity();
-    projM.perspective(45.0f, aspect, 1.0f, 500.0f);
-    QMatrix4x4 modelM;
-    modelM.setToIdentity();
-    modelM.translate(-3.0f, 0.0f, -5.0f);
+    projMatrix.setToIdentity();
+    projMatrix.frustum(-1.0f, 1.0f, -aspect, aspect, 1.0f, 500.0f);
+    glUniformMatrix4fv(project_matrix_loc, 1, GL_FALSE, projMatrix.data());
 
-    program->setUniformValue(render_projection_matrix_loc, projM);
-    program->setUniformValue(render_model_matrix_loc, modelM);
-
+    modelMatrix.setToIdentity();
+    modelMatrix.translate(-3.0f, 0.0f, -5.0f);
+    glUniformMatrix4fv(model_matrix_loc, 1, GL_FALSE, modelMatrix.data());
     glDrawArrays(GL_TRIANGLES, 0, 3);
 
-    ibo->bind();
+    modelMatrix.setToIdentity();
+    modelMatrix.translate(-1.0f, 0.0f, -5.0f);
+    glUniformMatrix4fv(model_matrix_loc, 1, GL_FALSE, modelMatrix.data());
+    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, NULL);
 
-    modelM.setToIdentity();
-    modelM.translate(-1.0f, 0.0f, -5.0f);
-    program->setUniformValue(render_model_matrix_loc, modelM);
-    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, nullptr);
+    modelMatrix.setToIdentity();
+    modelMatrix.translate(1.0f, 0.0f, -5.0f);
+    glUniformMatrix4fv(model_matrix_loc, 1, GL_FALSE, modelMatrix.data());
+    glDrawElementsBaseVertex(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, NULL, 1);
 
-    modelM.setToIdentity();
-    modelM.translate(1.0f, 0.0f, -5.0f);
-    program->setUniformValue(render_model_matrix_loc, modelM);
-    glDrawElementsBaseVertex(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, nullptr, 1);
-
-    modelM.setToIdentity();
-    modelM.translate(3.0f, 0.0f, -5.0f);
-    program->setUniformValue(render_model_matrix_loc, modelM);
+    modelMatrix.setToIdentity();
+    modelMatrix.translate(3.0f, 0.0f, -5.0f);
+    glUniformMatrix4fv(model_matrix_loc, 1, GL_FALSE, modelMatrix.data());
     glDrawArraysInstanced(GL_TRIANGLES, 0, 3, 1);
-}
-
-void DrawComWidget::mouseReleaseEvent(QMouseEvent *event) {
-    update();
 }
 
 void DrawComWidget::keyPressEvent(QKeyEvent *event) {
