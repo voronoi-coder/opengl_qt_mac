@@ -85,7 +85,7 @@ void DrawComWidget::paintGL() {
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glEnable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE); // draw counterclockwise triangle, discard clockwise triangle.
     glDisable(GL_DEPTH_TEST);
 
     glPolygonMode(GL_FRONT_AND_BACK, polygonMode);
@@ -114,7 +114,7 @@ void DrawComWidget::paintGL() {
     modelMatrix.setToIdentity();
     modelMatrix.translate(1.0f, 0.0f, -5.0f);
     glUniformMatrix4fv(model_matrix_loc, 1, GL_FALSE, modelMatrix.data());
-    glDrawElementsBaseVertex(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, NULL, 1);
+    glDrawElementsBaseVertex(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, NULL, 1); // color changes.
 
     modelMatrix.setToIdentity();
     modelMatrix.translate(3.0f, 0.0f, -5.0f);
