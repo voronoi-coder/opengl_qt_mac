@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
+find_package(Qt5Core)
 find_package(Qt5Widgets)
 
 add_library(loadshader STATIC lib/loadshader/LoadShader.hpp lib/loadshader/LoadShader.cpp)
