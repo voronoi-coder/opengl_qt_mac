@@ -4,6 +4,7 @@ set(VERMILION_EXAMPLES
         02_uniformblock
         03_drawcommands
         03_instancing
+        03_instancing2
         04_gouraud
         04_shadowmap
         06_statictexture)
