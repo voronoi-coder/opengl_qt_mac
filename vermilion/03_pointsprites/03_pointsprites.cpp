@@ -11,7 +11,7 @@
 
 using namespace vmath;
 
-#define POINT_COUNT 4
+#define POINT_COUNT 100
 
 static void checkGLError(const char *cmd) {
     int error = glGetError();
@@ -89,7 +89,7 @@ void PointSpritesWidget::initializeGL() {
 
     static ShaderInfo shader_info[] = {
             {GL_VERTEX_SHADER,   "/Users/junhe/Documents/OpenGL/opengl_qt_mac/vermilion/03_pointsprites/vs.glsl", 0},
-            {GL_FRAGMENT_SHADER, "/Users/junhe/Documents/OpenGL/opengl_qt_mac/vermilion/03_pointsprites/fs.glsl", 0},
+            {GL_FRAGMENT_SHADER, "/Users/junhe/Documents/OpenGL/opengl_qt_mac/vermilion/03_pointsprites/fs2.glsl", 0},
             {GL_NONE, NULL,                                                                                       0}
     };
     program = LoadShaders(shader_info);
@@ -149,7 +149,7 @@ void PointSpritesWidget::paintGL() {
 
     // Activate simple shading program
     glUseProgram(program);
-    
+
     // Set up the model and projection matrix
     mat4 projection_matrix(frustum(-1.0f, 1.0f, -aspect, aspect, 1.0f, 8.0f));
     glUniformMatrix4fv(projection_matrix_loc, 1, GL_FALSE, projection_matrix);
