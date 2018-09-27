@@ -4,6 +4,7 @@
 
 #include <QMatrix4x4>
 #include <array>
+#include <iostream>
 #include "outlinewidget.hpp"
 #include "../../lib/loadshader/LoadShader.hpp"
 
@@ -32,10 +33,8 @@ void OutlineGLWidget::initializeGL() {
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
     GLfloat data[] = {
-            0.0f, 0.0f,
-            300.0f, 300.0f,
-            0.0f, 300.0f,
-            300.0f,300.0f
+            -300.0f, -100.0f,
+            300.0f, 100.0f,
     };
 
     glBufferData(GL_ARRAY_BUFFER, sizeof(data), data, GL_STATIC_DRAW);
@@ -44,12 +43,15 @@ void OutlineGLWidget::initializeGL() {
     glBindVertexArray(vao);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void *) 0);
     glEnableVertexAttribArray(0);
+
+    pixelRatio = devicePixelRatioF();
 }
 
 void OutlineGLWidget::resizeGL(int w, int h) {
-    glViewport(0, 0, w, h);
-    width = w;
-    height = h;
+    glViewport(0, 0, w * pixelRatio, h * pixelRatio);
+    std::cout<<"w, h "<<w<<" "<<h<<"\n";
+    width = w * pixelRatio;
+    height = h * pixelRatio;
 }
 
 void OutlineGLWidget::paintGL() {
@@ -63,11 +65,12 @@ void OutlineGLWidget::paintGL() {
     QMatrix4x4 matrix;
     matrix.setToIdentity();
     matrix.frustum(-1.0f, 1.0f, -height / width, height / width, 1.0f, 5000.0f);
-    matrix.translate(0.0f, 0.0f, -100.0f);
+    matrix.translate(0.0f, 0.0f, -500.0f);
 
     glUniformMatrix4fv(matrixLoc, 1, GL_FALSE, matrix.data());
-    std::array<float, 2> screenSize = {width, height};
-    glUniform2fv(screenSizeLoc, 1, screenSize.data());
+
+    GLfloat screenSize[] = {width, height};
+    glUniform2fv(screenSizeLoc, 1, screenSize);
 
     GLfloat color[] = {1.0f, 0.0f, 0.0f, 1.0f};
     glUniform4fv(outlineColorLoc, 1, color);
@@ -75,7 +78,7 @@ void OutlineGLWidget::paintGL() {
     GLfloat lineWidthRange[2] = {0.0f, 0.0f};
     glGetFloatv(GL_LINE_WIDTH_RANGE, lineWidthRange);
 
-    glLineWidth(1.0f); // not work
+    glLineWidth(7.0f); // not work in OpenGL
 
-    glDrawArrays(GL_LINE_STRIP, 0, 4);
+    glDrawArrays(GL_LINES, 0, 2);
 }

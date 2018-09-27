@@ -30,4 +30,6 @@ private:
 
     GLfloat width;
     GLfloat height;
+
+    qreal pixelRatio;
 };

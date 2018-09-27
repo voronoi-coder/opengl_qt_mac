@@ -1,11 +1,11 @@
-#version 410
+//#version 410
 
-layout(location = 0) in vec2 a_pos;
+attribute vec2 a_pos;
 
 uniform mat4 u_matrix;
 uniform vec2 u_screen;
 
-out vec2 v_pos;
+varying vec2 v_pos;
 
 void main() {
     gl_Position = u_matrix * vec4(a_pos, 0, 1);
