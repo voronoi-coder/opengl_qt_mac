@@ -2,7 +2,17 @@ set(CURRENT_ROOT_DIR mapbox)
 set(MAPBOX_EXAMPLES
         drawcircle
         drawline
-        clip_plane)
+        clip_plane
+        outline
+        )
+
+add_library(mapboxgl
+        ${CURRENT_ROOT_DIR}/gl/gl_impl.hpp
+        ${CURRENT_ROOT_DIR}/gl/gl.cpp
+)
+
+target_include_directories(mapboxgl
+        PRIVATE ${CURRENT_ROOT_DIR}/gl)
 
 add_executable(drawcircle
         ${CURRENT_ROOT_DIR}/drawcircle/main.cpp
@@ -18,6 +28,10 @@ add_executable(clip_plane
         ${CURRENT_ROOT_DIR}/clip_plane/main.cpp
         ${CURRENT_ROOT_DIR}/clip_plane/clipplanewidget.hpp
         ${CURRENT_ROOT_DIR}/clip_plane/clipplanewidget.cpp)
+
+add_executable(outline
+        ${CURRENT_ROOT_DIR}/outline/main.cpp
+        ${CURRENT_ROOT_DIR}/outline/outlinewidget.cpp)
 
 foreach(EXAMPLE ${MAPBOX_EXAMPLES})
     target_include_directories(${EXAMPLE} PUBLIC ${CURRENT_ROOT_DIR}/${EXAMPLE})
