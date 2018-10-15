@@ -7,6 +7,7 @@ set(CMAKE_AUTORCC ON)
 
 find_package(Qt5Core)
 find_package(Qt5Widgets)
+find_package(Qt5WebEngineWidgets)
 
 add_library(loadshader STATIC lib/loadshader/LoadShader.hpp lib/loadshader/LoadShader.cpp)
 target_link_libraries(loadshader "-framework OpenGL")
@@ -22,6 +23,9 @@ include(mapbox/mapbox.cmake)
 add_executable(qt_codecs qt_codecs/main.cpp qt_codecs/mainwindow.cpp qt_codecs/mainwindow.hpp qt_codecs/previewform.cpp qt_codecs/previewform.hpp)
 target_link_libraries(qt_codecs Qt5::Widgets)
 # Qt codecs -- end
+
+add_executable(web_engine qt_web_engine/main.cpp)
+target_link_libraries(web_engine Qt5::Widgets Qt5::WebEngineWidgets)
 
 
 
