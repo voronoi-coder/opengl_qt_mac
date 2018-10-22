@@ -32,4 +32,6 @@ private:
     GLfloat height;
 
     qreal pixelRatio;
+
+    QVector<GLfloat> vextexs;
 };

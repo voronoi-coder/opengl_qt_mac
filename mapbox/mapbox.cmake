@@ -8,11 +8,16 @@ set(MAPBOX_EXAMPLES
 
 add_library(mapboxgl
         ${CURRENT_ROOT_DIR}/gl/gl_impl.hpp
+        ${CURRENT_ROOT_DIR}/util/optional.hpp
+
         ${CURRENT_ROOT_DIR}/gl/gl.cpp
+        ${CURRENT_ROOT_DIR}/gl/types.hpp
+        ${CURRENT_ROOT_DIR}/gl/attribute.cpp
 )
 
 target_include_directories(mapboxgl
-        PRIVATE ${CURRENT_ROOT_DIR}/gl)
+        PRIVATE ${CURRENT_ROOT_DIR}/gl
+        PRIVATE ${CURRENT_ROOT_DIR})
 
 add_executable(drawcircle
         ${CURRENT_ROOT_DIR}/drawcircle/main.cpp
