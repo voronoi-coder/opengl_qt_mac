@@ -4,6 +4,7 @@
 
 #include <QApplication>
 #include <QSurfaceFormat>
+#include <iostream>
 
 #include "outlinewidget.hpp"
 

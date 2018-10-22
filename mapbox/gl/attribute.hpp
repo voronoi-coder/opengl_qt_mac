@@ -7,6 +7,7 @@
 #include <tuple>
 
 #include <util/optional.hpp>
+#include <set>
 
 namespace mbgl {
 namespace gl {
@@ -29,6 +30,10 @@ class AttributeBinding {
 };
 
 using AttributeBindingArray = std::vector<optional<AttributeBinding>>;
+
+class Context;
+void bindAttributeLocation(Context&, ProgramID, AttributeLocation, const char *);
+std::set<std::string> getActiveAttributes(ProgramID);
 
 } // namespace gl
 } // namespace mbgl
