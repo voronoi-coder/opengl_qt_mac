@@ -10,11 +10,19 @@ add_library(mapboxgl
         ${CURRENT_ROOT_DIR}/gl/gl_impl.hpp
         ${CURRENT_ROOT_DIR}/util/optional.hpp
         ${CURRENT_ROOT_DIR}/util/nocopyable.hpp
+        ${CURRENT_ROOT_DIR}/util/ignore.hpp
+        ${CURRENT_ROOT_DIR}/util/unique_resource.hpp
+        ${CURRENT_ROOT_DIR}/util/type_list.hpp
 
         ${CURRENT_ROOT_DIR}/gl/gl.cpp
         ${CURRENT_ROOT_DIR}/gl/types.hpp
         ${CURRENT_ROOT_DIR}/gl/context.cpp
         ${CURRENT_ROOT_DIR}/gl/attribute.cpp
+        ${CURRENT_ROOT_DIR}/gl/vertex_buffer.hpp
+        ${CURRENT_ROOT_DIR}/gl/object.hpp
+        ${CURRENT_ROOT_DIR}/gl/object.cpp
+        ${CURRENT_ROOT_DIR}/gl/primitives.hpp
+        ${CURRENT_ROOT_DIR}/gl/draw_mode.hpp
 )
 
 target_include_directories(mapboxgl

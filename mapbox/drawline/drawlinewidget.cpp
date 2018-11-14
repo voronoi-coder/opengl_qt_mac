@@ -49,7 +49,7 @@ void DrawLineGLWidget::initializeGL() {
     line.push_back({-5, 5});
     line.push_back({10, 5});
     line.push_back({30, 30});
-    line.push_back({40, -30}); // miter length > 2.0f
+    line.push_back({40, 10}); // miter length > 2.0f
 
     buildLine(line, LineCapType::Round);
 
@@ -118,7 +118,7 @@ void DrawLineGLWidget::paintGL() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CLIP_DISTANCE0);
+//    glEnable(GL_CLIP_DISTANCE0);
 
     glPolygonMode(GL_FRONT_AND_BACK, polygonMode);
 

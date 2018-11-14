@@ -8,8 +8,13 @@
 namespace mbgl {
 namespace gl {
 
-using BufferID = uint32_t;
 using ProgramID = uint32_t;
+using ShaderID = uint32_t;
+using BufferID = uint32_t;
+using TextureID = uint32_t;
+using VertexArrayID = uint32_t;
+using FramebufferID = uint32_t;
+using RenderbufferID = uint32_t;
 
 enum class DataType : uint16_t {
     Byte = 0x1400,
