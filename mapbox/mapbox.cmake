@@ -13,6 +13,7 @@ add_library(mapboxgl
         ${CURRENT_ROOT_DIR}/util/ignore.hpp
         ${CURRENT_ROOT_DIR}/util/unique_resource.hpp
         ${CURRENT_ROOT_DIR}/util/type_list.hpp
+        ${CURRENT_ROOT_DIR}/util/indexed_tuple.hpp
 
         ${CURRENT_ROOT_DIR}/gl/gl.cpp
         ${CURRENT_ROOT_DIR}/gl/types.hpp

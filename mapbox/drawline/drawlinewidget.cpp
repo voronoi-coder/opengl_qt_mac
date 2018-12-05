@@ -102,6 +102,24 @@ void DrawLineGLWidget::initializeGL() {
     centerLineColorLoc = glGetUniformLocation(centerLineProgram, "u_color");
     centerLineMatrixLoc = glGetUniformLocation(centerLineProgram, "u_matrix");
 
+    const GLubyte* name = glGetString(GL_VENDOR); //返回负责当前OpenGL实现厂商的名字
+    const GLubyte* biaoshifu = glGetString(GL_RENDERER); //返回一个渲染器标识符，通常是个硬件平台
+    const GLubyte* OpenGLVersion = glGetString(GL_VERSION); //返回当前OpenGL实现的版本号
+
+    GLint majVers = 0, minVers = 0, profile = 0, flags = 0;
+    glGetIntegerv(GL_MAJOR_VERSION, &majVers);
+    glGetIntegerv(GL_MINOR_VERSION, &minVers);
+    glGetIntegerv(GL_CONTEXT_PROFILE_MASK, &profile);
+    glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
+
+    printf("GL_VENDOR : %s\n",name);
+    printf("GL_RENDERER : %s\n",biaoshifu);
+    printf("GL_VERSION : %s\n",OpenGLVersion);
+
+    printf("GL_MAJOR_VERSION %d\n", majVers);
+    printf("GL_MINOR_VERSION %d\n", minVers);
+    printf("GL_CONTEXT_PROFILE_MASK %d\n", profile);
+    printf("GL_CONTEXT_FLAGS %d\n", flags);
 }
 
 void DrawLineGLWidget::resizeGL(int w, int h) {

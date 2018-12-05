@@ -5,13 +5,16 @@
 
 #include <types.hpp>
 #include <tuple>
+#include <set>
+#include <vector>
+#include <string>
 
 #include <util/optional.hpp>
 #include <util/type_list.hpp>
-#include <set>
+#include <util/indexed_tuple.hpp>
 
 #include <gl/vertex_buffer.hpp>
-
+#include <util/ignore.hpp>
 
 namespace mbgl {
 namespace gl {
@@ -108,10 +111,189 @@ void bindAttributeLocation(Context &, ProgramID, AttributeLocation, const char *
 
 std::set<std::string> getActiveAttributes(ProgramID);
 
-template<typename... As>
-class Attributes {
+namespace detail {
+
+// Attribute binding requires member offsets. The only standard way to
+// obtain an offset is the offsetof macro. The offsetof macro has defined
+// behavior only for standard layout types. That rules out std::tuple and
+// any other solution that relies on chained inheritance. Manually implemented
+// variadic specialization looks like the only solution. Fortunately, we
+// only use a maximum of five attributes.
+
+template<class... As>
+class Vertex;
+
+template<>
+class Vertex<> {
+public:
+    using VertexType = Vertex<>;
 };
 
+template<class A1>
+class Vertex<A1> {
+public:
+    typename A1::Value a1;
+
+    using VertexType = Vertex<A1>;
+    static const std::size_t attributeOffsets[1];
+};
+
+template<class A1, class A2>
+class Vertex<A1, A2> {
+public:
+    typename A1::Value a1;
+    typename A2::Value a2;
+
+    using VertexType = Vertex<A1, A2>;
+    static const std::size_t attributeOffsets[2];
+};
+
+template<class A1, class A2, class A3>
+class Vertex<A1, A2, A3> {
+public:
+    typename A1::Value a1;
+    typename A2::Value a2;
+    typename A3::Value a3;
+
+    using VertexType = Vertex<A1, A2, A3>;
+    static const std::size_t attributeOffsets[3];
+};
+
+template<class A1, class A2, class A3, class A4>
+class Vertex<A1, A2, A3, A4> {
+public:
+    typename A1::Value a1;
+    typename A2::Value a2;
+    typename A3::Value a3;
+    typename A4::Value a4;
+
+    using VertexType = Vertex<A1, A2, A3, A4>;
+    static const std::size_t attributeOffsets[4];
+};
+
+template<class A1, class A2, class A3, class A4, class A5>
+class Vertex<A1, A2, A3, A4, A5> {
+public:
+    typename A1::Value a1;
+    typename A2::Value a2;
+    typename A3::Value a3;
+    typename A4::Value a4;
+    typename A5::Value a5;
+
+    using VertexType = Vertex<A1, A2, A3, A4, A5>;
+    static const std::size_t attributeOffsets[5];
+};
+
+template<class A1>
+const std::size_t Vertex<A1>::attributeOffsets[1] = {offsetof(VertexType, a1)};
+
+template<class A1, class A2>
+const std::size_t Vertex<A1, A2>::attributeOffsets[2] = {
+        offsetof(VertexType, a1),
+        offsetof(VertexType, a2)
+};
+
+template<class A1, class A2, class A3>
+const std::size_t Vertex<A1, A2, A3>::attributeOffsets[3] = {
+        offsetof(VertexType, a1),
+        offsetof(VertexType, a2),
+        offsetof(VertexType, a3)
+};
+
+template<class A1, class A2, class A3, class A4>
+const std::size_t Vertex<A1, A2, A3, A4>::attributeOffsets[4] = {
+        offsetof(VertexType, a1),
+        offsetof(VertexType, a2),
+        offsetof(VertexType, a3),
+        offsetof(VertexType, a4)
+};
+
+template<class A1, class A2, class A3, class A4, class A5>
+const std::size_t Vertex<A1, A2, A3, A4, A5>::attributeOffsets[5] = {
+        offsetof(VertexType, a1),
+        offsetof(VertexType, a2),
+        offsetof(VertexType, a3),
+        offsetof(VertexType, a4),
+        offsetof(VertexType, a5)
+};
+} // namespace detail
+
+template<typename... As>
+class Attributes {
+public:
+    using Types = TypeList<As...>;
+    using Locations = IndexedTuple<TypeList<As...>, TypeList<ExpandToType<As, optional<AttributeLocation>>...>>;
+    using Bindings = IndexedTuple<TypeList<As...>, TypeList<ExpandToType<As, optional<AttributeBinding>>...>>;
+    using NamedLocations = std::vector<std::pair<const std::string, AttributeLocation>>;
+    using Vertex = detail::Vertex<typename As::Type...>;
+
+    static Locations bindLocations(Context &context, const ProgramID &id) {
+        std::set<std::string> activeAttributes = getActiveAttributes(id);
+
+        AttributeLocation location = 0;
+        auto maybeBindLocation = [&](const char *name) -> optional<AttributeLocation> {
+            if (activeAttributes.count(name)) {
+                bindAttributeLocation(context, id, location, name);
+                location++;
+            } else {
+                return {};
+            }
+        };
+
+        return Locations{maybeBindLocation(As::name())...};
+    }
+
+    template<class Program>
+    static Locations loadNamedLocations(Program &program) {
+        return Locations{program.attributeLocation(As::name())...};
+    }
+
+    static NamedLocations getNamedLocations(const Locations &locations) {
+        NamedLocations result;
+
+        auto maybeAddLocations = [&](const std::string &name, optional<AttributeLocation> &location) {
+            if (location) {
+                result.emplace_back(name, location);
+            }
+        };
+
+        util::ignore({(maybeAddLocations(As::name(), locations.template get<As>()), 0)...});
+
+        return result;
+    }
+
+    template<class DrawMode>
+    static Bindings bindings(const VertexBuffer<Vertex, DrawMode> &buffer) {
+        return Bindings{As::Type::binding(buffer, TypeIndex<As, As...>::value)...};
+    }
+
+    static Bindings offsetBindings(const Bindings &bindings, std::size_t vertexOffset) {
+        return Bindings{As::Type::offsetBinding(bindings.template get<As>(), vertexOffset)...};
+    }
+
+    static AttributeBindingArray toBindingArray(const Locations &locations, const Bindings &bindings) {
+        AttributeBindingArray result;
+
+        auto maybeAddBinding = [&](const optional<AttributeLocation> &location,
+                                   const optional<AttributeBinding> &binding) {
+            if (location) {
+                result.at(*location) = binding;
+            }
+        };
+
+        util::ignore({(maybeAddBinding(locations.template get<As>), 0)...});
+
+        return result;
+    }
+
+    static uint32_t activeBindingCount(const Bindings &bindings) {
+        uint32_t result = 0;
+        util::ignore({(result += bool(bindings.template get<As>()), 0)...});
+    }
+};
+
+template<class... As>
+using ConcatenateAttributes = typename TypeListConcat<typename As::Types...>::template ExpandInto<Attributes>;
 } // namespace gl
 } // namespace mbgl
 
