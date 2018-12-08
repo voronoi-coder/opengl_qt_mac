@@ -53,3 +53,7 @@ foreach(EXAMPLE ${MAPBOX_EXAMPLES})
     target_include_directories(${EXAMPLE} PUBLIC ${CURRENT_ROOT_DIR}/${EXAMPLE})
     target_link_libraries(${EXAMPLE} Qt5::Widgets "-framework OpenGL" loadshader)
 endforeach(EXAMPLE)
+
+add_executable(mapbox_test
+        ${CURRENT_ROOT_DIR}/main.cpp)
+target_include_directories(mapbox_test PRIVATE ${CURRENT_ROOT_DIR})
