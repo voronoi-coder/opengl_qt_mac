@@ -12,9 +12,7 @@
 #include "../../lib/loadshader/LoadShader.hpp"
 
 
-DrawLineGLWidget::DrawLineGLWidget(QWidget *parent) : QOpenGLWidget(parent) {
-
-}
+DrawLineGLWidget::DrawLineGLWidget(QWidget *parent) : QOpenGLWidget(parent) {}
 
 DrawLineGLWidget::~DrawLineGLWidget() {
     glUseProgram(0);
@@ -34,8 +32,8 @@ DrawLineGLWidget::~DrawLineGLWidget() {
 
 void DrawLineGLWidget::initializeGL() {
     ShaderInfo line_shaders[] = {
-            {GL_VERTEX_SHADER,   "/Users/junhe/Documents/OpenGL/opengl_qt_mac/mapbox/drawline/resource/line_vs.glsl"},
-            {GL_FRAGMENT_SHADER, "/Users/junhe/Documents/OpenGL/opengl_qt_mac/mapbox/drawline/resource/line_fs.glsl"},
+            {GL_VERTEX_SHADER,   "/Users/junhe/Documents/opengl_qt_mac/mapbox/drawline/resource/line_vs.glsl"},
+            {GL_FRAGMENT_SHADER, "/Users/junhe/Documents/opengl_qt_mac/mapbox/drawline/resource/line_fs.glsl"},
             {GL_NONE}
     };
 
@@ -102,9 +100,9 @@ void DrawLineGLWidget::initializeGL() {
     centerLineColorLoc = glGetUniformLocation(centerLineProgram, "u_color");
     centerLineMatrixLoc = glGetUniformLocation(centerLineProgram, "u_matrix");
 
-    const GLubyte* name = glGetString(GL_VENDOR); //返回负责当前OpenGL实现厂商的名字
-    const GLubyte* biaoshifu = glGetString(GL_RENDERER); //返回一个渲染器标识符，通常是个硬件平台
-    const GLubyte* OpenGLVersion = glGetString(GL_VERSION); //返回当前OpenGL实现的版本号
+    const GLubyte *name = glGetString(GL_VENDOR); //返回负责当前OpenGL实现厂商的名字
+    const GLubyte *biaoshifu = glGetString(GL_RENDERER); //返回一个渲染器标识符，通常是个硬件平台
+    const GLubyte *OpenGLVersion = glGetString(GL_VERSION); //返回当前OpenGL实现的版本号
 
     GLint majVers = 0, minVers = 0, profile = 0, flags = 0;
     glGetIntegerv(GL_MAJOR_VERSION, &majVers);
@@ -112,9 +110,9 @@ void DrawLineGLWidget::initializeGL() {
     glGetIntegerv(GL_CONTEXT_PROFILE_MASK, &profile);
     glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
 
-    printf("GL_VENDOR : %s\n",name);
-    printf("GL_RENDERER : %s\n",biaoshifu);
-    printf("GL_VERSION : %s\n",OpenGLVersion);
+    printf("GL_VENDOR : %s\n", name);
+    printf("GL_RENDERER : %s\n", biaoshifu);
+    printf("GL_VERSION : %s\n", OpenGLVersion);
 
     printf("GL_MAJOR_VERSION %d\n", majVers);
     printf("GL_MINOR_VERSION %d\n", minVers);

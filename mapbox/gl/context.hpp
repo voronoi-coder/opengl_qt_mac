@@ -3,9 +3,11 @@
 //
 #pragma once
 
-#include <cstdint>
 #include <util/nocopyable.hpp>
 #include <gl/types.hpp>
+#include <gl/gl_functions.hpp>
+#include <gl/state.hpp>
+
 #include <vector>
 
 namespace mbgl {
@@ -13,15 +15,12 @@ namespace gl {
 
 constexpr size_t TextureMax = 64;
 
-class Context : private util::nocopyable {
-public:
-    Context();
-
-    ~Context();
+class Context {
 
 public:
-    const uint32_t maximumVertexBindingCount;
+     const uint32_t maximumVertexBindingCount = 16;
 
+public:
     std::vector<TextureID> pooledTextures;
 
     std::vector<ProgramID> abandonedPrograms;

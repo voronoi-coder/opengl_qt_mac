@@ -4,13 +4,14 @@ project(qt_opengl)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(Qt5Core)
 find_package(Qt5Widgets)
 find_package(Qt5WebEngineWidgets)
 
 add_library(loadshader STATIC lib/loadshader/LoadShader.hpp lib/loadshader/LoadShader.cpp)
-target_link_libraries(loadshader "-framework OpenGL")
+target_link_libraries(loadshader PUBLIC "-framework OpenGL")
 
 add_library(loadtexture lib/loadtexture/vermilion.hpp lib/loadtexture/loadtexture.cpp)
 target_link_libraries(loadtexture "-framework OpenGL")

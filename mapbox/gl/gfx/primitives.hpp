@@ -1,10 +1,9 @@
-//
-// Created by zhaojunhe on 2018/11/14.
-//
 #pragma once
 
+#include <cstddef>
+
 namespace mbgl {
-namespace gl {
+namespace gfx {
 
 class Point {
 public:
@@ -21,5 +20,5 @@ public:
     static constexpr std::size_t vertexCount = 3;
 };
 
-} // namespace gl
+} // namespace gfx
 } // namespace mbgl

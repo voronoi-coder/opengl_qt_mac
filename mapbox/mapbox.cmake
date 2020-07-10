@@ -6,29 +6,55 @@ set(MAPBOX_EXAMPLES
         outline
         )
 
+# Qt5 always build OpenGL ES2 which is the compatibility
+# mode. Qt5 will take care of translating the desktop
+# version of OpenGL to ES2.
+add_definitions("-DMBGL_USE_GLES2")
+
 add_library(mapboxgl
-        ${CURRENT_ROOT_DIR}/gl/gl_impl.hpp
         ${CURRENT_ROOT_DIR}/util/optional.hpp
         ${CURRENT_ROOT_DIR}/util/nocopyable.hpp
         ${CURRENT_ROOT_DIR}/util/ignore.hpp
         ${CURRENT_ROOT_DIR}/util/unique_resource.hpp
         ${CURRENT_ROOT_DIR}/util/type_list.hpp
         ${CURRENT_ROOT_DIR}/util/indexed_tuple.hpp
+        ${CURRENT_ROOT_DIR}/util/util.hpp
+        ${CURRENT_ROOT_DIR}/util/color.hpp
+        ${CURRENT_ROOT_DIR}/util/color.cpp
+        ${CURRENT_ROOT_DIR}/util/csscolorparser.cpp
+        ${CURRENT_ROOT_DIR}/util/size.hpp
 
-        ${CURRENT_ROOT_DIR}/gl/gl.cpp
+        ${CURRENT_ROOT_DIR}/gl/platform/gl_functions.cpp
+        ${CURRENT_ROOT_DIR}/gl/gl_functions.cpp
+
+        ${CURRENT_ROOT_DIR}/gl/gfx/attribute.hpp
+        ${CURRENT_ROOT_DIR}/gl/gfx/color_mode.hpp
+        ${CURRENT_ROOT_DIR}/gl/gfx/cull_face_mode.hpp
+        ${CURRENT_ROOT_DIR}/gl/gfx/depth_mode.hpp
+        ${CURRENT_ROOT_DIR}/gl/gfx/draw_mode.hpp
+        ${CURRENT_ROOT_DIR}/gl/gfx/primitives.hpp
+        ${CURRENT_ROOT_DIR}/gl/gfx/stencil_mode.hpp
+        ${CURRENT_ROOT_DIR}/gl/gfx/types.hpp
+        ${CURRENT_ROOT_DIR}/gl/gfx/uniform.hpp
+
         ${CURRENT_ROOT_DIR}/gl/types.hpp
-        ${CURRENT_ROOT_DIR}/gl/context.cpp
-        ${CURRENT_ROOT_DIR}/gl/attribute.cpp
-        ${CURRENT_ROOT_DIR}/gl/vertex_buffer.hpp
-        ${CURRENT_ROOT_DIR}/gl/object.hpp
         ${CURRENT_ROOT_DIR}/gl/object.cpp
-        ${CURRENT_ROOT_DIR}/gl/primitives.hpp
-        ${CURRENT_ROOT_DIR}/gl/draw_mode.hpp
+        ${CURRENT_ROOT_DIR}/gl/context.cpp
+        ${CURRENT_ROOT_DIR}/gl/vertex_buffer.hpp
+        ${CURRENT_ROOT_DIR}/gl/index_buffer.hpp
+        ${CURRENT_ROOT_DIR}/gl/attribute.cpp
+        ${CURRENT_ROOT_DIR}/gl/value.cpp
+        ${CURRENT_ROOT_DIR}/gl/state.hpp
+        ${CURRENT_ROOT_DIR}/gl/extension.hpp
+        ${CURRENT_ROOT_DIR}/gl/vertex_array_extension.hpp
+        ${CURRENT_ROOT_DIR}/gl/enum.cpp
 )
+target_link_libraries(mapboxgl Qt5::Widgets)
 
 target_include_directories(mapboxgl
         PRIVATE ${CURRENT_ROOT_DIR}/gl
-        PRIVATE ${CURRENT_ROOT_DIR})
+        PRIVATE ${CURRENT_ROOT_DIR}
+        PRIVATE ${CURRENT_ROOT_DIR}/vendor/variant/include)
 
 add_executable(drawcircle
         ${CURRENT_ROOT_DIR}/drawcircle/main.cpp

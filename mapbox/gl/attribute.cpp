@@ -1,16 +1,24 @@
-//
-// Created by zhaojunhe on 2018/10/15.
-//
-
-#include <attribute.hpp>
-#include <gl.hpp>
-#include <context.hpp>
-#include <string>
+#include <gl/attribute.hpp>
+#include <gl/context.hpp>
+#include <gl/defines.hpp>
 
 namespace mbgl {
 namespace gl {
 
-void bindAttributeLocation(Context &context, ProgramID id, AttributeLocation location, const char *name) {
+using namespace platform;
+
+optional<AttributeBinding> offsetAttributeBinding(const optional<AttributeBinding>& binding, std::size_t vertexOffset) {
+    assert(vertexOffset <= std::numeric_limits<uint32_t>::max());
+    if (binding) {
+        AttributeBinding result = *binding;
+        result.vertexOffset = static_cast<uint32_t>(vertexOffset);
+        return result;
+    } else {
+        return binding;
+    }
+}
+
+void bindAttributeLocation(Context& context, ProgramID id, AttributeLocation location, const char* name) {
     // We're using sequentially numberered attribute locations starting with 0. Therefore we can use
     // the location as a proxy for the number of attributes.
     if (location >= context.maximumVertexBindingCount) {
@@ -38,7 +46,7 @@ std::set<std::string> getActiveAttributes(ProgramID id) {
     GLint size;
     GLenum type;
 
-    for (int32_t i = 0; i < attributeCount; ++i) {
+    for (int32_t i = 0; i < attributeCount; i++) {
         MBGL_CHECK_ERROR(glGetActiveAttrib(id, i, maxAttributeLength, &actualLength, &size, &type, &attributeName[0]));
         activeAttributes.emplace(std::string(attributeName, 0, actualLength));
     }
