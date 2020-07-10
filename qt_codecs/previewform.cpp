@@ -33,8 +33,6 @@ static void formatHex(QTextStream &str, const QByteArray &data)
     str.setFieldAlignment(alignment);
     str.setPadChar(padChar);
     str.setIntegerBase(base);
-
-    commit2;
 }
 
 static void formatPrintableCharacters(QTextStream &str, const QByteArray &data)
